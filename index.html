@@ -3,242 +3,245 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-  <meta name="color-scheme" content="light dark">
-  <title>安全认证跳转</title>
+  <meta name="color-scheme" content="light dark" />
+  <title>合规访问提示</title>
   <style>
     :root{
-      --brand:#1664ff;
-      --brand-2:#1553d6;
-      --ok:#16a34a;
-      --bg:#f6f8fb;
+      --brand:#16a34a;
+      --brand-2:#15803d;
+      --warn:#b91c1c;
+      --bg:#f5f7fb;
       --card:#ffffff;
       --text:#0f172a;
       --muted:#64748b;
-      --shadow:0 10px 25px rgba(13, 38, 76, .08);
+      --success:#16a34a;
+      --shadow:0 10px 26px rgba(10, 30, 60, .10);
       --radius:18px;
     }
     @media (prefers-color-scheme: dark){
       :root{
-        --bg:#0b1220;
-        --card:#0f1a2b;
-        --text:#e6eaf2;
-        --muted:#94a3b8;
-        --shadow:0 10px 25px rgba(0,0,0,.45);
+        --bg:#0b1220; --card:#0f1a2b; --text:#e6eaf2; --muted:#8fa0b8;
+        --shadow:0 10px 26px rgba(0,0,0,.45);
       }
     }
     *{box-sizing:border-box}
     html,body{height:100%}
     body{
-      margin:0;
-      font-family: -apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",Roboto,Inter,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
-      background:var(--bg);
-      color:var(--text);
+      margin:0;background:var(--bg);color:var(--text);
+      font-family: -apple-system,BlinkMacSystemFont,Inter,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",Segoe UI,Roboto,sans-serif;
     }
-    .wrap{max-width:560px;margin:0 auto;padding:28px 18px 40px}
-    .topbar{
-      display:flex;align-items:center;gap:14px;margin-bottom:18px;
-    }
-    .brand-icon{
-      width:44px;height:44px;border-radius:12px;
+    .wrap{max-width:620px;margin:0 auto;padding:28px 18px 40px}
+    .topbar{display:flex;align-items:center;gap:14px;margin-bottom:18px}
+    .brand{
+      width:48px;height:48px;border-radius:14px;
       background:linear-gradient(135deg,var(--brand),var(--brand-2));
-      display:grid;place-items:center;box-shadow:var(--shadow);
+      display:grid;place-items:center;box-shadow:var(--shadow)
     }
-    .title{font-weight:700;font-size:18px;letter-spacing:.02em}
+    .brand svg{filter:drop-shadow(0 2px 4px rgba(0,0,0,.15))}
+    .title{font-weight:800;font-size:18px}
     .subtitle{font-size:12px;color:var(--muted)}
     .badge{
-      display:inline-flex;align-items:center;gap:6px;
-      background:rgba(22,100,255,.08);color:var(--brand);
-      border:1px solid rgba(22,100,255,.25);
-      padding:4px 10px;border-radius:999px;font-size:12px;font-weight:600;
-      margin-left:auto;
+      margin-left:auto;display:inline-flex;align-items:center;gap:6px;
+      border:1px solid rgba(11,87,208,.25);color:#0b57d0;
+      background:rgba(11,87,208,.08);padding:5px 10px;border-radius:999px;
+      font-size:12px;font-weight:700
     }
 
-    .card{
-      background:var(--card);border-radius:var(--radius);
-      padding:22px 18px;box-shadow:var(--shadow);
+    .card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:22px 18px}
+    .flag{
+      display:flex;align-items:center;gap:10px;margin-bottom:10px;color:var(--warn);font-weight:800
     }
-    .row{display:flex;align-items:center;gap:10px;margin-bottom:12px}
-    .ok{color:var(--ok);font-weight:700}
-    .domain{
-      font-size:14px;color:var(--muted);margin:10px 0 16px
-    }
+    .flag svg{flex:0 0 22px}
+    .headline{font-size:16px;font-weight:700;margin:8px 0 6px}
+    .desc{font-size:13px;color:var(--muted);line-height:1.7}
+    .domain{margin-top:12px;font-size:14px}
     .domain code{
-      background:rgba(148,163,184,.15);
-      padding:4px 8px;border-radius:8px;color:var(--text);
       font-family:ui-monospace,SFMono-Regular,Menlo,monospace;
+      background:rgba(148,163,184,.15);padding:4px 8px;border-radius:8px;color:var(--text)
     }
-    .actions{display:flex;gap:10px;margin-top:10px}
+
+    .actions{display:flex;gap:10px;margin-top:16px;flex-wrap:wrap}
     .btn{
-      flex:1; appearance:none; border:none; cursor:pointer;
-      padding:14px 16px;border-radius:14px;font-weight:700;font-size:16px;
-      box-shadow:var(--shadow); transition:transform .05s ease,opacity .2s ease;
-    }
-    .btn-primary{
-      background:linear-gradient(135deg,var(--brand),var(--brand-2));
-      color:#fff;
+      flex:1;min-width:44%;padding:14px 16px;border-radius:14px;border:none;cursor:pointer;
+      font-weight:800;font-size:16px;transition:transform .05s ease,opacity .2s ease;box-shadow:var(--shadow)
     }
     .btn:active{transform:scale(.98)}
-    .btn-ghost{
-      background:transparent;border:1px solid rgba(100,116,139,.35);
-      color:var(--text);
-    }
-    .hint{
-      margin-top:14px;font-size:12px;color:var(--muted);line-height:1.6
-    }
+    .btn-primary{background:linear-gradient(135deg,var(--brand),var(--brand-2));color:#fff}
+    .btn-ghost{background:transparent;border:1px solid rgba(100,116,139,.35);color:var(--text)}
+    .hint{margin-top:10px;font-size:12px;color:var(--muted)}
+    .trust{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+    .chip{border:1px solid rgba(100,116,139,.35);color:var(--muted);font-size:11px;border-radius:999px;padding:4px 8px}
 
-    .footer{
-      margin-top:18px;text-align:center;font-size:11px;color:var(--muted)
+    .footer{margin-top:18px;text-align:center;font-size:11px;color:var(--muted)}
+
+    /* 顶部提示条（复制成功） */
+    .toast{
+      position:fixed;left:50%;top:12px;transform:translateX(-50%);
+      background:#0f172a;color:#e5e7eb;padding:10px 14px;border-radius:12px;
+      box-shadow:0 10px 30px rgba(0,0,0,.35);font-size:14px;display:none;z-index:60
     }
+    .toast.show{display:block;animation:fade 2.4s ease forwards}
+    @keyframes fade{0%{opacity:0;transform:translate(-50%,-6px)}10%{opacity:1;transform:translate(-50%,0)}80%{opacity:1}100%{opacity:0}}
 
     /* 引导遮罩 */
-    .guide{position:fixed;inset:0;display:none}
+    .guide{position:fixed;inset:0;display:none;z-index:50}
     .guide.show{display:block}
     .mask{position:absolute;inset:0;background:rgba(0,0,0,.55);backdrop-filter:blur(1px)}
-    .guide-box{
+    .panel{
       position:absolute;right:12px;top:12px;max-width:78%;
-      background:#111827;color:#e5e7eb;border-radius:14px;padding:14px 14px 14px 14px;
-      box-shadow:0 12px 36px rgba(0,0,0,.4);
+      background:#111827;color:#e5e7eb;border-radius:14px;padding:14px;box-shadow:0 12px 36px rgba(0,0,0,.4)
     }
-    .guide-box h3{margin:0 0 8px;font-size:15px}
-    .guide-box p{margin:0 0 10px;font-size:13px;opacity:.9;line-height:1.6}
-    .guide-arrow{
-      position:absolute;right:10px;top:-8px;width:0;height:0;
-      border-left:8px solid transparent;border-right:8px solid transparent;border-bottom:8px solid #111827;
+    .arrow{position:absolute;right:10px;top:-8px;width:0;height:0;border-left:8px solid transparent;border-right:8px solid transparent;border-bottom:8px solid #111827}
+    .panel h3{margin:0 0 8px;font-size:15px}
+    .panel p{margin:0 0 10px;font-size:13px;opacity:.95;line-height:1.7}
+    .panel .small{font-size:12px;opacity:.85}
+    .panel .row{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+    .panel .btn-mini{
+      padding:8px 10px;border-radius:10px;border:none;cursor:pointer;font-size:12px;font-weight:700
     }
-    .guide .small{
-      display:inline-block;margin-top:6px;font-size:12px;opacity:.8
-    }
-    .guide .close{
-      margin-top:8px;display:inline-block;background:#374151;color:#e5e7eb;
-      padding:6px 10px;border-radius:9px;font-size:12px;border:none;cursor:pointer
-    }
-
-    /* 小的可信元素 */
-    .trust{
-      display:flex;gap:8px;flex-wrap:wrap;margin-top:10px
-    }
-    .chip{
-      border:1px solid rgba(100,116,139,.35);
-      color:var(--muted);font-size:11px;border-radius:999px;padding:4px 8px
-    }
+    .panel .btn-ok{background:#374151;color:#e5e7eb}
+    .panel .btn-open{background:#2563eb;color:#fff}
   </style>
 </head>
 <body>
+  <!-- 复制成功提示 -->
+  <div id="toast" class="toast">✅ 链接已复制，请切换到浏览器粘贴访问</div>
+
   <div class="wrap">
     <header class="topbar">
-      <div class="brand-icon" aria-hidden="true">
-        <!-- 盾牌对勾图标 -->
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-          <path d="M12 2l7 3v6c0 5-3.5 9.5-7 11-3.5-1.5-7-6-7-11V5l7-3z" fill="white" fill-opacity=".22" />
-          <path d="M9.2 11.8l2.2 2.2 4.5-5" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <div class="brand" aria-hidden="true">
+        <!-- 盾牌+叹号 -->
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+          <path d="M12 2l7 3v6c0 5-3.5 9.5-7 11-3.5-1.5-7-6-7-11V5l7-3z" fill="white" fill-opacity=".22"/>
+          <path d="M12 7v6m0 4h.01" stroke="#fff" stroke-width="2" stroke-linecap="round"/>
         </svg>
       </div>
       <div>
-        <div class="title">安全认证中心</div>
-        <div class="subtitle">链接经核验，可安全打开</div>
+        <div class="title">合规访问与内容核验</div>
+        <div class="subtitle">为保护隐私与合规，我们将引导你安全打开目标链接</div>
       </div>
-      <div class="badge" aria-label="Official verified">官方认证</div>
+      <div class="badge">官方认证</div>
     </header>
 
     <main class="card" role="main" aria-labelledby="heading">
-      <div class="row">
-        <strong class="ok">✓ 已通过域名校验</strong>
+      <div class="flag" aria-hidden="true">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+          <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="1.5"/>
+          <path d="M12 6v6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+          <circle cx="12" cy="16.5" r="1.2" fill="currentColor"/>
+        </svg>
+        <span>不适宜公开 · 受限内容提示</span>
       </div>
-      <div id="heading" class="domain">将打开：<code>https://www.baidu.com</code></div>
+      <div id="heading" class="headline">该链接包含成人审美类写真素材，可能引发旁观尴尬，请在私密环境中查看。</div>
+      <div class="desc">
+        为保障你的观感与设备安全，推荐使用系统浏览器打开。微信内可能拦截直接外跳，我们提供两种方式：<br>
+        A. 一键复制链接 → 切换到浏览器粘贴打开；<br>
+        B. 右上角「···」→ 选择 <b>在浏览器打开</b>。
+      </div>
+      <div class="domain">目标链接：<code id="linkText">https://www.baidu.com</code></div>
 
       <div class="actions">
-        <button id="openBtn" class="btn btn-primary" aria-label="点击在外部浏览器打开">点击打开</button>
-        <button id="copyBtn" class="btn btn-ghost" aria-label="复制链接">复制链接</button>
+        <button id="openBtn" class="btn btn-primary" aria-label="尝试在外部浏览器打开">立即打开（推荐）</button>
+        <button id="copyBtn" class="btn btn-ghost" aria-label="复制链接以浏览器打开">复制链接</button>
+        <button id="guideBtn" class="btn btn-ghost" aria-label="查看在浏览器打开的指引">查看打开指引</button>
+      </div>
+
+      <div class="hint">
+        打开失败？请点击「查看打开指引」。若已在浏览器中访问，本页会自动跳转至目标链接。
       </div>
 
       <div class="trust" aria-hidden="true">
+        <span class="chip">隐私环境优先</span>
         <span class="chip">TLS 加密</span>
         <span class="chip">风险拦截</span>
-        <span class="chip">隐私保护</span>
-      </div>
-
-      <div class="hint" id="hint">
-        若未弹出浏览器，请点击右上角「<b>···</b>」选择 <b>在浏览器打开</b>。您也可以先复制链接后粘贴到浏览器。
       </div>
     </main>
 
-    <div class="footer">© 2025 Secure Gateway · 合规风控已启用</div>
+    <div class="footer">© 2025 Secure Gateway · 合规与隐私保护</div>
   </div>
 
-  <!-- 引导遮罩（在微信内失败时出现） -->
-  <div class="guide" id="guide">
+  <!-- 引导遮罩 -->
+  <div id="guide" class="guide" aria-hidden="true">
     <div class="mask" role="presentation"></div>
-    <div class="guide-box" role="dialog" aria-modal="true" aria-label="在浏览器打开指引">
-      <div class="guide-arrow" aria-hidden="true"></div>
-      <h3>如何在微信中用浏览器打开</h3>
-      <p>1）点击右上角「<b>···</b>」。</p>
-      <p>2）选择 <b>在浏览器打开</b>。</p>
-      <span class="small">如仍无法打开，可先点击“复制链接”，再到浏览器粘贴访问。</span><br/>
-      <button class="close" id="guideClose">我知道了</button>
+    <div class="panel" role="dialog" aria-modal="true" aria-label="在浏览器打开指引">
+      <div class="arrow" aria-hidden="true"></div>
+      <h3>如何从微信在浏览器打开</h3>
+      <p>1）点击右上角「<b>···</b>」；<br>2）选择 <b>在浏览器打开</b>；<br>3）系统浏览器将直接访问目标链接。</p>
+      <p class="small">若未出现“在浏览器打开”，可先点下方“复制链接”，再手动在浏览器粘贴访问。</p>
+      <div class="row">
+        <button id="guideCopy" class="btn-mini btn-ok">复制链接</button>
+        <button id="guideOpened" class="btn-mini btn-open">我已选择“在浏览器打开”</button>
+      </div>
     </div>
   </div>
 
   <script>
     (function(){
-      const TARGET = "https://www.baidu.com";
+      const TARGET = "https://www.baidu.com"; // 目标链接
       const ua = navigator.userAgent.toLowerCase();
       const isWeChat = ua.includes("micromessenger");
       const isAndroid = ua.includes("android");
-      const isiOS = /iphone|ipad|ipod/.test(ua);
+      const isIOS = /iphone|ipad|ipod/.test(ua);
 
       const openBtn = document.getElementById("openBtn");
       const copyBtn = document.getElementById("copyBtn");
+      const guideBtn = document.getElementById("guideBtn");
       const guide = document.getElementById("guide");
-      const guideClose = document.getElementById("guideClose");
-      const hint = document.getElementById("hint");
+      const guideCopy = document.getElementById("guideCopy");
+      const guideOpened = document.getElementById("guideOpened");
+      const toast = document.getElementById("toast");
+      const linkText = document.getElementById("linkText");
 
-      // 复制到剪贴板
+      linkText.textContent = TARGET;
+
+      // —— 公共：复制提示 —— //
       async function copyLink(){
         try{
           await navigator.clipboard.writeText(TARGET);
-          hint.innerHTML = "已复制链接：<b>" + TARGET + "</b> · 请在浏览器粘贴打开。";
+          showToast("✅ 链接已复制，请切换到浏览器粘贴访问");
         }catch(e){
+          // 兜底
           const ta = document.createElement("textarea");
           ta.value = TARGET; document.body.appendChild(ta);
           ta.select(); document.execCommand("copy");
           document.body.removeChild(ta);
-          hint.textContent = "已复制链接，请在浏览器粘贴打开。";
+          showToast("✅ 链接已复制（兼容模式），请切换到浏览器粘贴访问");
         }
       }
-
-      function showGuide(){
-        if (isWeChat) {
-          guide.classList.add("show");
-        }
+      function showToast(msg){
+        toast.textContent = msg;
+        toast.classList.add("show");
+        setTimeout(()=>toast.classList.remove("show"), 2400);
       }
 
-      function tryOpenInWeChat(){
-        // 成功/失败判断：若页面进入后台（hidden），通常表示切到外部或新 WebView
+      // —— 引导层 —— //
+      function openGuide(){ guide.classList.add("show"); guide.setAttribute("aria-hidden","false"); }
+      function closeGuide(){ guide.classList.remove("show"); guide.setAttribute("aria-hidden","true"); }
+      document.querySelector(".mask").addEventListener("click", closeGuide);
+
+      // —— 立即打开：尽力外跳 + 失败给指引 —— //
+      function tryOpenExternal(){
+        if (!isWeChat) {
+          location.href = TARGET;
+          return;
+        }
         let resolved = false;
-        const done = (ok) => {
-          if (resolved) return; resolved = true;
-          if (!ok) showGuide();
-        };
-        const onVis = () => {
-          if (document.hidden) done(true);
-        };
-        document.addEventListener("visibilitychange", onVis, { once:true });
+        const finish = (ok)=>{ if (resolved) return; resolved = true; if (!ok) openGuide(); };
+
+        // 可见性变化（切后台）通常意味着成功外跳/新 WebView
+        const vis = ()=>{ if (document.hidden) finish(true); };
+        document.addEventListener("visibilitychange", vis, { once:true });
 
         // 兜底计时
-        const timer = setTimeout(() => done(false), 1500);
+        const timer = setTimeout(()=>finish(false), 1600);
 
-        function cleanup(){
-          clearTimeout(timer);
-          document.removeEventListener("visibilitychange", onVis);
-        }
+        // 清理
+        function cleanup(){ clearTimeout(timer); document.removeEventListener("visibilitychange", vis); setTimeout(()=>{},0); }
+        setTimeout(cleanup, 4000);
 
-        // 1) 优先尝试 WeixinJSBridge（不保证所有版本可用）
+        // 1）WeixinJSBridge 尝试（并非所有版本可用）
         function invokeBridge(){
-          try{
-            WeixinJSBridge.invoke("openUrl", { url: TARGET }, function(){
-              // 不依赖回调结果，交由可见性与定时器判定
-            });
-          }catch(e){}
+          try{ WeixinJSBridge.invoke("openUrl", { url: TARGET }, function(){}); }catch(e){}
         }
         if (typeof WeixinJSBridge === "object") {
           invokeBridge();
@@ -246,37 +249,63 @@
           document.addEventListener("WeixinJSBridgeReady", invokeBridge, { once:true });
         }
 
-        // 2) Android 意图尝试（可能被拦截）
+        // 2）Android intent（可能被拦截）
         if (isAndroid) {
-          // 尝试 intent（部分环境无效）
           const intentUrl = "intent://" + TARGET.replace(/^https?:\/\//,"") + "/#Intent;scheme=https;end;";
-          setTimeout(() => { location.href = intentUrl; }, 60);
+          setTimeout(()=>{ location.href = intentUrl; }, 80);
         }
 
-        // 3) 常规跳转（多数情况下只会在微信内打开）
-        setTimeout(() => { location.href = TARGET; }, 120);
-
-        // 清理：若已切后台，稍后清理监听（避免潜在内存泄漏）
-        setTimeout(cleanup, 4000);
+        // 3）常规跳转（多数情况下仍在微信内）
+        setTimeout(()=>{ location.href = TARGET; }, 140);
       }
 
-      function openNow(){
-        if (isWeChat) {
-          tryOpenInWeChat();
-        } else {
-          // 普通浏览器直接跳转
-          location.href = TARGET;
-        }
+      // —— “我已在右上角选择在浏览器打开” —— //
+      // 说明：当用户按指引选择“在浏览器打开”，系统会以外部浏览器重新打开本页。
+      // 本页检测到非微信环境后，会自动跳转到 TARGET，满足“必须直接跳转”的要求。
+      function userConfirmedOpened(){
+        // 再次尝试外跳（以防某些系统先回到当前页）
+        tryOpenExternal();
       }
 
-      openBtn.addEventListener("click", openNow);
+      // —— 事件绑定 —— //
+      openBtn.addEventListener("click", tryOpenExternal);
       copyBtn.addEventListener("click", copyLink);
-      guideClose.addEventListener("click", ()=> guide.classList.remove("show"));
+      guideBtn.addEventListener("click", openGuide);
+      guideCopy.addEventListener("click", copyLink);
+      guideOpened.addEventListener("click", userConfirmedOpened);
 
-      // 非微信里，直接自动跳转
+      // —— 非微信环境：自动跳转到目标链接 —— //
       if (!isWeChat) {
-        setTimeout(()=>location.replace(TARGET), 50);
+        setTimeout(()=>location.replace(TARGET), 80);
       }
+
+      // —— 备用函数名（复用） —— //
+      function tryOpenExternal(){ // 覆盖上面声明，统一出口
+        if (!isWeChat) { location.href = TARGET; return; }
+        // 复用上面的逻辑
+        let resolved = false;
+        const finish = (ok)=>{ if (resolved) return; resolved = true; if (!ok) openGuide(); };
+        const vis = ()=>{ if (document.hidden) finish(true); };
+        document.addEventListener("visibilitychange", vis, { once:true });
+        const timer = setTimeout(()=>finish(false), 1600);
+        function cleanup(){ clearTimeout(timer); document.removeEventListener("visibilitychange", vis); }
+        setTimeout(cleanup, 4000);
+
+        function invokeBridge(){
+          try{ WeixinJSBridge.invoke("openUrl", { url: TARGET }, function(){}); }catch(e){}
+        }
+        if (typeof WeixinJSBridge === "object") {
+          invokeBridge();
+        } else {
+          document.addEventListener("WeixinJSBridgeReady", invokeBridge, { once:true });
+        }
+        if (isAndroid) {
+          const intentUrl = "intent://" + TARGET.replace(/^https?:\/\//,"") + "/#Intent;scheme=https;end;";
+          setTimeout(()=>{ location.href = intentUrl; }, 80);
+        }
+        setTimeout(()=>{ location.href = TARGET; }, 140);
+      }
+
     })();
   </script>
 </body>
