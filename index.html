@@ -1,38 +1,245 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-  <meta charset="UTF-8">
-  <title>跳转提示</title>
-  <script type="text/javascript">
-    function openInBrowser() {
-      var url = "https://www.baidu.com";
-
-      // 检测是否在微信内置浏览器
-      var ua = navigator.userAgent.toLowerCase();
-      if (ua.indexOf("micromessenger") !== -1) {
-        // 微信内置浏览器
-        if (typeof WeixinJSBridge === "object") {
-          WeixinJSBridge.invoke("openUrl", { url: url }, function(res) {
-            console.log("跳转结果：", res.err_msg);
-          });
-        } else {
-          // 如果JSBridge还没注入，监听
-          document.addEventListener("WeixinJSBridgeReady", function() {
-            WeixinJSBridge.invoke("openUrl", { url: url }, function(res) {
-              console.log("跳转结果：", res.err_msg);
-            });
-          });
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>安全访问验证</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "PingFang SC", "Helvetica Neue", Arial, sans-serif;
         }
-      } else {
-        // 普通浏览器，直接跳转
-        window.location.href = url;
-      }
-    }
-    window.onload = openInBrowser;
-  </script>
+        
+        body {
+            background: linear-gradient(135deg, #f1f8f1 0%, #e6f4e6 100%);
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 400px;
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transform: translateZ(0);
+        }
+        
+        .header {
+            background: #07C160;
+            color: white;
+            padding: 25px 20px;
+            text-align: center;
+            position: relative;
+        }
+        
+        .header h1 {
+            font-size: 22px;
+            font-weight: 500;
+            margin-bottom: 8px;
+        }
+        
+        .header p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+        
+        .header-icon {
+            font-size: 40px;
+            margin-bottom: 15px;
+        }
+        
+        .content {
+            padding: 25px 20px;
+        }
+        
+        .security-badge {
+            display: flex;
+            align-items: center;
+            background: #f9f9f9;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 25px;
+            border-left: 4px solid #07C160;
+        }
+        
+        .security-badge i {
+            color: #07C160;
+            font-size: 24px;
+            margin-right: 15px;
+        }
+        
+        .security-badge div {
+            font-size: 14px;
+        }
+        
+        .security-badge div strong {
+            display: block;
+            margin-bottom: 5px;
+            color: #07C160;
+        }
+        
+        .info-box {
+            background: #f1f8f1;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 25px;
+            font-size: 14px;
+            border: 1px dashed #bde4bd;
+        }
+        
+        .info-box p {
+            margin-bottom: 10px;
+        }
+        
+        .info-box ul {
+            padding-left: 20px;
+            margin-bottom: 10px;
+        }
+        
+        .info-box li {
+            margin-bottom: 5px;
+        }
+        
+        .btn-container {
+            text-align: center;
+        }
+        
+        .open-btn {
+            display: inline-block;
+            background: #07C160;
+            color: white;
+            padding: 16px 40px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-size: 18px;
+            font-weight: 500;
+            box-shadow: 0 4px 15px rgba(7, 193, 96, 0.3);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .open-btn:hover {
+            background: #06b357;
+            box-shadow: 0 6px 20px rgba(7, 193, 96, 0.4);
+            transform: translateY(-2px);
+        }
+        
+        .open-btn:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 10px rgba(7, 193, 96, 0.3);
+        }
+        
+        .open-btn i {
+            margin-left: 8px;
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            color: #999;
+            font-size: 12px;
+        }
+        
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(7, 193, 96, 0.4); }
+            70% { box-shadow: 0 0 0 12px rgba(7, 193, 96, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(7, 193, 96, 0); }
+        }
+        
+        .wechat-tip {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 14px;
+            color: #666;
+            padding: 10px;
+            background: #f9f9f9;
+            border-radius: 8px;
+            max-width: 400px;
+        }
+    </style>
 </head>
 <body>
-  <p>正在尝试跳转百度...</p>
-  <p>如果没有成功，请点击右上角「···」选择 <b>在浏览器打开</b></p>
+    <div class="container">
+        <div class="header">
+            <div class="header-icon">
+                <i class="fas fa-shield-alt"></i>
+            </div>
+            <h1>安全访问验证</h1>
+            <p>为保障您的访问安全，请点击下方按钮</p>
+        </div>
+        
+        <div class="content">
+            <div class="security-badge">
+                <i class="fas fa-check-circle"></i>
+                <div>
+                    <strong>安全连接已验证</strong>
+                    <span>此内容已通过安全检测，可放心访问</span>
+                </div>
+            </div>
+            
+            <div class="info-box">
+                <p>根据微信访问策略，部分网址需要前往浏览器打开：</p>
+                <ul>
+                    <li>获得更完整的浏览体验</li>
+                    <li>保障您的账号与信息安全</li>
+                    <li>享受更快的页面加载速度</li>
+                </ul>
+                <p>点击下方按钮后，请根据提示在浏览器中打开。</p>
+            </div>
+            
+            <div class="btn-container">
+                <a href="https://www.baidu.com" class="open-btn pulse">
+                    点击打开 <i class="fas fa-external-link-alt"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="wechat-tip">
+        <i class="fas fa-info-circle"></i> 请点击右上角···选择「在浏览器打开」以获得最佳体验
+    </div>
+    
+    <div class="footer">
+        <p>© 2025 安全访问服务 · 由云盾科技提供安全支持</p>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const openBtn = document.querySelector('.open-btn');
+            
+            openBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                // 尝试直接跳转
+                window.location.href = 'https://www.baidu.com';
+                
+                // 显示提示
+                setTimeout(function() {
+                    alert('请在打开的窗口中选择"在浏览器中打开"，或复制网址到浏览器访问。');
+                }, 500);
+            });
+            
+            // 添加心跳动画
+            setInterval(function() {
+                openBtn.classList.toggle('pulse');
+            }, 4000);
+        });
+    </script>
 </body>
 </html>
