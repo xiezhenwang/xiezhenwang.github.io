@@ -1,245 +1,283 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>安全访问验证</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: "PingFang SC", "Helvetica Neue", Arial, sans-serif;
-        }
-        
-        body {
-            background: linear-gradient(135deg, #f1f8f1 0%, #e6f4e6 100%);
-            color: #333;
-            line-height: 1.6;
-            padding: 20px;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .container {
-            width: 100%;
-            max-width: 400px;
-            background: white;
-            border-radius: 16px;
-            overflow: hidden;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-            transform: translateZ(0);
-        }
-        
-        .header {
-            background: #07C160;
-            color: white;
-            padding: 25px 20px;
-            text-align: center;
-            position: relative;
-        }
-        
-        .header h1 {
-            font-size: 22px;
-            font-weight: 500;
-            margin-bottom: 8px;
-        }
-        
-        .header p {
-            font-size: 14px;
-            opacity: 0.9;
-        }
-        
-        .header-icon {
-            font-size: 40px;
-            margin-bottom: 15px;
-        }
-        
-        .content {
-            padding: 25px 20px;
-        }
-        
-        .security-badge {
-            display: flex;
-            align-items: center;
-            background: #f9f9f9;
-            border-radius: 10px;
-            padding: 15px;
-            margin-bottom: 25px;
-            border-left: 4px solid #07C160;
-        }
-        
-        .security-badge i {
-            color: #07C160;
-            font-size: 24px;
-            margin-right: 15px;
-        }
-        
-        .security-badge div {
-            font-size: 14px;
-        }
-        
-        .security-badge div strong {
-            display: block;
-            margin-bottom: 5px;
-            color: #07C160;
-        }
-        
-        .info-box {
-            background: #f1f8f1;
-            border-radius: 10px;
-            padding: 15px;
-            margin-bottom: 25px;
-            font-size: 14px;
-            border: 1px dashed #bde4bd;
-        }
-        
-        .info-box p {
-            margin-bottom: 10px;
-        }
-        
-        .info-box ul {
-            padding-left: 20px;
-            margin-bottom: 10px;
-        }
-        
-        .info-box li {
-            margin-bottom: 5px;
-        }
-        
-        .btn-container {
-            text-align: center;
-        }
-        
-        .open-btn {
-            display: inline-block;
-            background: #07C160;
-            color: white;
-            padding: 16px 40px;
-            border-radius: 50px;
-            text-decoration: none;
-            font-size: 18px;
-            font-weight: 500;
-            box-shadow: 0 4px 15px rgba(7, 193, 96, 0.3);
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .open-btn:hover {
-            background: #06b357;
-            box-shadow: 0 6px 20px rgba(7, 193, 96, 0.4);
-            transform: translateY(-2px);
-        }
-        
-        .open-btn:active {
-            transform: translateY(0);
-            box-shadow: 0 2px 10px rgba(7, 193, 96, 0.3);
-        }
-        
-        .open-btn i {
-            margin-left: 8px;
-        }
-        
-        .footer {
-            text-align: center;
-            margin-top: 30px;
-            color: #999;
-            font-size: 12px;
-        }
-        
-        .pulse {
-            animation: pulse 2s infinite;
-        }
-        
-        @keyframes pulse {
-            0% { box-shadow: 0 0 0 0 rgba(7, 193, 96, 0.4); }
-            70% { box-shadow: 0 0 0 12px rgba(7, 193, 96, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(7, 193, 96, 0); }
-        }
-        
-        .wechat-tip {
-            margin-top: 20px;
-            text-align: center;
-            font-size: 14px;
-            color: #666;
-            padding: 10px;
-            background: #f9f9f9;
-            border-radius: 8px;
-            max-width: 400px;
-        }
-    </style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <meta name="color-scheme" content="light dark">
+  <title>安全认证跳转</title>
+  <style>
+    :root{
+      --brand:#1664ff;
+      --brand-2:#1553d6;
+      --ok:#16a34a;
+      --bg:#f6f8fb;
+      --card:#ffffff;
+      --text:#0f172a;
+      --muted:#64748b;
+      --shadow:0 10px 25px rgba(13, 38, 76, .08);
+      --radius:18px;
+    }
+    @media (prefers-color-scheme: dark){
+      :root{
+        --bg:#0b1220;
+        --card:#0f1a2b;
+        --text:#e6eaf2;
+        --muted:#94a3b8;
+        --shadow:0 10px 25px rgba(0,0,0,.45);
+      }
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family: -apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",Roboto,Inter,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+      background:var(--bg);
+      color:var(--text);
+    }
+    .wrap{max-width:560px;margin:0 auto;padding:28px 18px 40px}
+    .topbar{
+      display:flex;align-items:center;gap:14px;margin-bottom:18px;
+    }
+    .brand-icon{
+      width:44px;height:44px;border-radius:12px;
+      background:linear-gradient(135deg,var(--brand),var(--brand-2));
+      display:grid;place-items:center;box-shadow:var(--shadow);
+    }
+    .title{font-weight:700;font-size:18px;letter-spacing:.02em}
+    .subtitle{font-size:12px;color:var(--muted)}
+    .badge{
+      display:inline-flex;align-items:center;gap:6px;
+      background:rgba(22,100,255,.08);color:var(--brand);
+      border:1px solid rgba(22,100,255,.25);
+      padding:4px 10px;border-radius:999px;font-size:12px;font-weight:600;
+      margin-left:auto;
+    }
+
+    .card{
+      background:var(--card);border-radius:var(--radius);
+      padding:22px 18px;box-shadow:var(--shadow);
+    }
+    .row{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+    .ok{color:var(--ok);font-weight:700}
+    .domain{
+      font-size:14px;color:var(--muted);margin:10px 0 16px
+    }
+    .domain code{
+      background:rgba(148,163,184,.15);
+      padding:4px 8px;border-radius:8px;color:var(--text);
+      font-family:ui-monospace,SFMono-Regular,Menlo,monospace;
+    }
+    .actions{display:flex;gap:10px;margin-top:10px}
+    .btn{
+      flex:1; appearance:none; border:none; cursor:pointer;
+      padding:14px 16px;border-radius:14px;font-weight:700;font-size:16px;
+      box-shadow:var(--shadow); transition:transform .05s ease,opacity .2s ease;
+    }
+    .btn-primary{
+      background:linear-gradient(135deg,var(--brand),var(--brand-2));
+      color:#fff;
+    }
+    .btn:active{transform:scale(.98)}
+    .btn-ghost{
+      background:transparent;border:1px solid rgba(100,116,139,.35);
+      color:var(--text);
+    }
+    .hint{
+      margin-top:14px;font-size:12px;color:var(--muted);line-height:1.6
+    }
+
+    .footer{
+      margin-top:18px;text-align:center;font-size:11px;color:var(--muted)
+    }
+
+    /* 引导遮罩 */
+    .guide{position:fixed;inset:0;display:none}
+    .guide.show{display:block}
+    .mask{position:absolute;inset:0;background:rgba(0,0,0,.55);backdrop-filter:blur(1px)}
+    .guide-box{
+      position:absolute;right:12px;top:12px;max-width:78%;
+      background:#111827;color:#e5e7eb;border-radius:14px;padding:14px 14px 14px 14px;
+      box-shadow:0 12px 36px rgba(0,0,0,.4);
+    }
+    .guide-box h3{margin:0 0 8px;font-size:15px}
+    .guide-box p{margin:0 0 10px;font-size:13px;opacity:.9;line-height:1.6}
+    .guide-arrow{
+      position:absolute;right:10px;top:-8px;width:0;height:0;
+      border-left:8px solid transparent;border-right:8px solid transparent;border-bottom:8px solid #111827;
+    }
+    .guide .small{
+      display:inline-block;margin-top:6px;font-size:12px;opacity:.8
+    }
+    .guide .close{
+      margin-top:8px;display:inline-block;background:#374151;color:#e5e7eb;
+      padding:6px 10px;border-radius:9px;font-size:12px;border:none;cursor:pointer
+    }
+
+    /* 小的可信元素 */
+    .trust{
+      display:flex;gap:8px;flex-wrap:wrap;margin-top:10px
+    }
+    .chip{
+      border:1px solid rgba(100,116,139,.35);
+      color:var(--muted);font-size:11px;border-radius:999px;padding:4px 8px
+    }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <div class="header-icon">
-                <i class="fas fa-shield-alt"></i>
-            </div>
-            <h1>安全访问验证</h1>
-            <p>为保障您的访问安全，请点击下方按钮</p>
-        </div>
-        
-        <div class="content">
-            <div class="security-badge">
-                <i class="fas fa-check-circle"></i>
-                <div>
-                    <strong>安全连接已验证</strong>
-                    <span>此内容已通过安全检测，可放心访问</span>
-                </div>
-            </div>
-            
-            <div class="info-box">
-                <p>根据微信访问策略，部分网址需要前往浏览器打开：</p>
-                <ul>
-                    <li>获得更完整的浏览体验</li>
-                    <li>保障您的账号与信息安全</li>
-                    <li>享受更快的页面加载速度</li>
-                </ul>
-                <p>点击下方按钮后，请根据提示在浏览器中打开。</p>
-            </div>
-            
-            <div class="btn-container">
-                <a href="https://www.baidu.com" class="open-btn pulse">
-                    点击打开 <i class="fas fa-external-link-alt"></i>
-                </a>
-            </div>
-        </div>
-    </div>
-    
-    <div class="wechat-tip">
-        <i class="fas fa-info-circle"></i> 请点击右上角···选择「在浏览器打开」以获得最佳体验
-    </div>
-    
-    <div class="footer">
-        <p>© 2025 安全访问服务 · 由云盾科技提供安全支持</p>
-    </div>
+  <div class="wrap">
+    <header class="topbar">
+      <div class="brand-icon" aria-hidden="true">
+        <!-- 盾牌对勾图标 -->
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M12 2l7 3v6c0 5-3.5 9.5-7 11-3.5-1.5-7-6-7-11V5l7-3z" fill="white" fill-opacity=".22" />
+          <path d="M9.2 11.8l2.2 2.2 4.5-5" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <div>
+        <div class="title">安全认证中心</div>
+        <div class="subtitle">链接经核验，可安全打开</div>
+      </div>
+      <div class="badge" aria-label="Official verified">官方认证</div>
+    </header>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const openBtn = document.querySelector('.open-btn');
-            
-            openBtn.addEventListener('click', function(e) {
-                e.preventDefault();
-                
-                // 尝试直接跳转
-                window.location.href = 'https://www.baidu.com';
-                
-                // 显示提示
-                setTimeout(function() {
-                    alert('请在打开的窗口中选择"在浏览器中打开"，或复制网址到浏览器访问。');
-                }, 500);
+    <main class="card" role="main" aria-labelledby="heading">
+      <div class="row">
+        <strong class="ok">✓ 已通过域名校验</strong>
+      </div>
+      <div id="heading" class="domain">将打开：<code>https://www.baidu.com</code></div>
+
+      <div class="actions">
+        <button id="openBtn" class="btn btn-primary" aria-label="点击在外部浏览器打开">点击打开</button>
+        <button id="copyBtn" class="btn btn-ghost" aria-label="复制链接">复制链接</button>
+      </div>
+
+      <div class="trust" aria-hidden="true">
+        <span class="chip">TLS 加密</span>
+        <span class="chip">风险拦截</span>
+        <span class="chip">隐私保护</span>
+      </div>
+
+      <div class="hint" id="hint">
+        若未弹出浏览器，请点击右上角「<b>···</b>」选择 <b>在浏览器打开</b>。您也可以先复制链接后粘贴到浏览器。
+      </div>
+    </main>
+
+    <div class="footer">© 2025 Secure Gateway · 合规风控已启用</div>
+  </div>
+
+  <!-- 引导遮罩（在微信内失败时出现） -->
+  <div class="guide" id="guide">
+    <div class="mask" role="presentation"></div>
+    <div class="guide-box" role="dialog" aria-modal="true" aria-label="在浏览器打开指引">
+      <div class="guide-arrow" aria-hidden="true"></div>
+      <h3>如何在微信中用浏览器打开</h3>
+      <p>1）点击右上角「<b>···</b>」。</p>
+      <p>2）选择 <b>在浏览器打开</b>。</p>
+      <span class="small">如仍无法打开，可先点击“复制链接”，再到浏览器粘贴访问。</span><br/>
+      <button class="close" id="guideClose">我知道了</button>
+    </div>
+  </div>
+
+  <script>
+    (function(){
+      const TARGET = "https://www.baidu.com";
+      const ua = navigator.userAgent.toLowerCase();
+      const isWeChat = ua.includes("micromessenger");
+      const isAndroid = ua.includes("android");
+      const isiOS = /iphone|ipad|ipod/.test(ua);
+
+      const openBtn = document.getElementById("openBtn");
+      const copyBtn = document.getElementById("copyBtn");
+      const guide = document.getElementById("guide");
+      const guideClose = document.getElementById("guideClose");
+      const hint = document.getElementById("hint");
+
+      // 复制到剪贴板
+      async function copyLink(){
+        try{
+          await navigator.clipboard.writeText(TARGET);
+          hint.innerHTML = "已复制链接：<b>" + TARGET + "</b> · 请在浏览器粘贴打开。";
+        }catch(e){
+          const ta = document.createElement("textarea");
+          ta.value = TARGET; document.body.appendChild(ta);
+          ta.select(); document.execCommand("copy");
+          document.body.removeChild(ta);
+          hint.textContent = "已复制链接，请在浏览器粘贴打开。";
+        }
+      }
+
+      function showGuide(){
+        if (isWeChat) {
+          guide.classList.add("show");
+        }
+      }
+
+      function tryOpenInWeChat(){
+        // 成功/失败判断：若页面进入后台（hidden），通常表示切到外部或新 WebView
+        let resolved = false;
+        const done = (ok) => {
+          if (resolved) return; resolved = true;
+          if (!ok) showGuide();
+        };
+        const onVis = () => {
+          if (document.hidden) done(true);
+        };
+        document.addEventListener("visibilitychange", onVis, { once:true });
+
+        // 兜底计时
+        const timer = setTimeout(() => done(false), 1500);
+
+        function cleanup(){
+          clearTimeout(timer);
+          document.removeEventListener("visibilitychange", onVis);
+        }
+
+        // 1) 优先尝试 WeixinJSBridge（不保证所有版本可用）
+        function invokeBridge(){
+          try{
+            WeixinJSBridge.invoke("openUrl", { url: TARGET }, function(){
+              // 不依赖回调结果，交由可见性与定时器判定
             });
-            
-            // 添加心跳动画
-            setInterval(function() {
-                openBtn.classList.toggle('pulse');
-            }, 4000);
-        });
-    </script>
+          }catch(e){}
+        }
+        if (typeof WeixinJSBridge === "object") {
+          invokeBridge();
+        } else {
+          document.addEventListener("WeixinJSBridgeReady", invokeBridge, { once:true });
+        }
+
+        // 2) Android 意图尝试（可能被拦截）
+        if (isAndroid) {
+          // 尝试 intent（部分环境无效）
+          const intentUrl = "intent://" + TARGET.replace(/^https?:\/\//,"") + "/#Intent;scheme=https;end;";
+          setTimeout(() => { location.href = intentUrl; }, 60);
+        }
+
+        // 3) 常规跳转（多数情况下只会在微信内打开）
+        setTimeout(() => { location.href = TARGET; }, 120);
+
+        // 清理：若已切后台，稍后清理监听（避免潜在内存泄漏）
+        setTimeout(cleanup, 4000);
+      }
+
+      function openNow(){
+        if (isWeChat) {
+          tryOpenInWeChat();
+        } else {
+          // 普通浏览器直接跳转
+          location.href = TARGET;
+        }
+      }
+
+      openBtn.addEventListener("click", openNow);
+      copyBtn.addEventListener("click", copyLink);
+      guideClose.addEventListener("click", ()=> guide.classList.remove("show"));
+
+      // 非微信里，直接自动跳转
+      if (!isWeChat) {
+        setTimeout(()=>location.replace(TARGET), 50);
+      }
+    })();
+  </script>
 </body>
 </html>
