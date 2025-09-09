@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover"
+  />
+  <title>三人行聊天记录分享</title>
+  <meta name="format-detection" content="telephone=no, email=no" />
+  <meta name="theme-color" content="#ff7aa2" />
+
+  <style>
+    /* ================ 可调参数（水印 & 细节） ================ */
+    :root{
+      /* 水印参数：直接改这里即可 */
+      --wm-text: "认准QQ:3679003238";
+      --wm-color: #ff2d55;          /* 红色 */
+      --wm-font-size: 16;           /* 字号（px） */
+      --wm-opacity: 0.18;           /* 透明度：0~1 */
+      --wm-rotate: -24;             /* 旋转角度（度） */
+      --wm-tile-w: 160;             /* 单元宽度（像素） */
+      --wm-tile-h: 110;             /* 单元高度（像素） */
+
+      /* 主题（粉色·高级） */
+      --pink-50:#fff1f5;
+      --pink-100:#ffe4ee;
+      --pink-300:#ffb3c7;
+      --pink-400:#ff95b3;
+      --pink-500:#ff7aa2;
+      --pink-600:#f85f93;
+      --pink-700:#e54a86;
+      --ink-800:#3b2a36;
+      --radius:18px;
+      --shadow:0 10px 30px rgba(255, 122, 162, .18);
+      --card-bg:rgba(255,255,255,.65);
+      --blur:14px;
+    }
+
+    html,body{
+      margin:0;
+      padding:0;
+      background:
+        radial-gradient(1200px 700px at 80% -10%, #ffd3e3 0%, transparent 70%),
+        radial-gradient(1000px 500px at -10% 10%, #ffeaf1 0%, transparent 60%),
+        linear-gradient(180deg, #fff 0%, #ffe8f0 100%);
+      min-height:100%;
+      color:var(--ink-800);
+      font-family: -apple-system, BlinkMacSystemFont, "PingFang SC","Hiragino Sans GB","Microsoft YaHei", "Segoe UI", Roboto, Helvetica, Arial, "Noto Sans CJK SC", sans-serif;
+      line-height:1.6;
+      -webkit-tap-highlight-color: transparent;
+      -webkit-touch-callout: none;   /* 关键：禁用 iOS/安卓长按呼出菜单 */
+    }
+
+    /* 禁止文本与图片复制/选中/拖拽（尽力） */
+    *{ user-select:none; -webkit-user-select:none; }
+    img{
+      display:block;
+      width:100%;
+      height:auto;           /* 关键：保持原始宽高比，自适应 */
+      border-radius: 14px;
+      box-shadow: 0 8px 18px rgba(255,122,162,.22);
+      background: #f7f0f3;
+      -webkit-user-drag: none;
+      user-drag: none;
+      pointer-events: none;  /* 关键：让长按命中不到 img 本体 */
+    }
+
+    .wrap{
+      max-width:820px;
+      margin:0 auto;
+      padding: clamp(14px, 3vw, 24px);
+      padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 24px);
+      position: relative;
+      z-index: 3;
+    }
+
+    .hero{
+      display:flex;align-items:center;justify-content:space-between;gap:12px;
+      padding:18px 16px;border-radius: var(--radius);
+      background: linear-gradient(180deg, rgba(255,255,255,.7), rgba(255,255,255,.35));
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(var(--blur));
+      margin: 10px 0 18px;
+      border: 1px solid rgba(255, 144, 174, .35);
+    }
+    .hero h1{
+      font-size: clamp(18px, 4.8vw, 28px);
+      margin:0;font-weight:800;letter-spacing:.5px;
+      background: linear-gradient(90deg, var(--pink-700), var(--pink-500));
+      -webkit-background-clip:text;background-clip:text;color: transparent;
+    }
+    .hero p{ margin:2px 0 0; font-size: clamp(12px, 3.2vw, 14px); color:#7d5c6c; }
+    .badge{
+      white-space:nowrap;font-size:12px;padding:8px 12px;border-radius:999px;
+      background: linear-gradient(90deg, var(--pink-500), var(--pink-600));
+      color:#fff;box-shadow: 0 6px 16px rgba(248,95,147,.35);
+      border: 1px solid rgba(255,255,255,.55);
+    }
+
+    .card{
+      background: var(--card-bg);
+      backdrop-filter: blur(var(--blur));
+      border: 1px solid rgba(255, 170, 190, .45);
+      box-shadow: var(--shadow);
+      border-radius: var(--radius);
+      padding: 14px;
+      margin: 14px 0 18px;
+    }
+
+    .section-title{
+      display:flex;align-items:center;gap:10px;margin:2px 0 12px;
+      font-weight:800;font-size: clamp(16px, 4.2vw, 20px);letter-spacing:.3px;
+    }
+    .section-title .dot{
+      width:10px;height:10px;border-radius:50%;
+      background: linear-gradient(180deg, var(--pink-500), var(--pink-700));
+      box-shadow: 0 0 0 6px rgba(255,122,162,.16);
+      flex:0 0 10px;
+    }
+
+    /* 板块一：文字 */
+    .notice{ display:grid; gap:10px; font-size: clamp(14px, 3.8vw, 16px); color:#5a3f4c; line-height:1.7; }
+    .sep{ border:none;height:1px;background: linear-gradient(90deg, transparent, rgba(255,122,162,.45), transparent);margin:2px 0; }
+    .highlight{
+      display:inline-block;padding: 2px 8px;border-radius: 999px;
+      background: rgba(255, 122, 162, .12);
+      border: 1px dashed rgba(255,122,162,.45);
+      font-weight:700;
+    }
+    .price{ color:#e11900; font-weight:800; } /* 价格红色高亮 */
+
+    /* 图像展示区：figure 加透明覆盖层，拦截长按到 img */
+    .media{ display:grid; gap:12px; }
+    .media figure{ margin:0; position:relative; }
+    .media figure::after{
+      content:""; position:absolute; inset:0; z-index:5; background:transparent;
+      /* 这个覆盖层可让长按命中不到 <img>，安卓不会弹“保存图片” */
+      /* 不阻止滚动，保持透明即可 */
+    }
+    .caption{ margin-top:6px;font-size: 12px;color:#7a5c69; }
+
+    /* 漂浮水印（顶层） */
+    .watermark{
+      position: fixed; inset: 0; z-index: 9999;
+      pointer-events: none;
+      /* 背景图由 JS 注入，便于通过 :root 变量调节密度/大小/颜色/透明度 */
+    }
+
+    /* 顶层屏蔽层（可选）：若你不需要它，可删除本元素及相关样式 */
+    .shield{ position: fixed; inset: 0; z-index: 4; background: transparent; }
+
+    .tip{ margin: -2px 0 8px; font-size:12px;color:#8a6b78; }
+    .chip{
+      display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border-radius:999px;
+      background:#fff;border:1px solid rgba(255,122,162,.35);
+      box-shadow: 0 4px 10px rgba(255,122,162,.16);
+      font-size:12px;color:#7a4e60;
+    }
+  </style>
+</head>
+
+<body oncontextmenu="return false" oncopy="return false" oncut="return false" onpaste="return false" ondragstart="return false">
+  <!-- 漂浮水印 -->
+  <div class="watermark" aria-hidden="true"></div>
+  <!-- 顶层屏蔽层（防长按保存、右键等；如不需要可删除） -->
+  <div class="shield" aria-hidden="true"></div>
+
+  <div id="app">
+    <div class="wrap">
+      <!-- 顶部 -->
+      <section class="hero">
+        <div>
+          <h1>三人行内部群分享</h1>
+          <p>夫妻 · 情侣 · 单身 · 匹配</p>
+        </div>
+        <span class="badge">受控分享</span>
+      </section>
+
+      <!-- 第一板块（文字：两行价格都加相同粉红底色 + 红色价格） -->
+      <section class="card">
+        <div class="section-title"><span class="dot"></span>进群门槛（高质量社群拒绝白嫖）</div>
+        <div class="notice">
+          <div>
+            <span class="highlight">
+              进一个👗🚪<span class="price">68</span>
+            </span>
+            <br/>
+            <span class="highlight">
+              进两个👗🚪<span class="price">98</span>
+            </span>
+            <br/>
+            付后截图发我，我把你啦进👗
+          </div>
+          <hr class="sep" />
+          <div>
+            400人➕全国_绿冒👗<br/>
+            换7️⃣3人、4人<br/>
+            👗里每天都有FQ分享战况图、视频！（每个👗都不一样噢，都300-400人以上）
+          </div>
+          <hr class="sep" />
+          <div>
+            长an存到相册，用V_X扫<br/>
+            付后截图发我，我把你啦进👗
+          </div>
+          <hr class="sep" />
+          <div>以下是👗里边部分记录📝</div>
+        </div>
+      </section>
+
+      <!-- 第二板块（收款码） -->
+      <section class="card">
+        <div class="section-title"><span class="dot"></span>收款二维码（付款后截图、你的微信发我拉你进群）</div>
+        <div class="tip">注：请截图保存二维码，到微信扫码支付。</div>
+        <figure class="media">
+          <img loading="lazy" draggable="false" src="https://cjw.dsai88.com/lvmaoquan/liaotianjilu/shoukuanma.jpg" alt="收款二维码" />
+          <figcaption class="caption chip">收款码 · 付款后截图给我拉你进群</figcaption>
+        </figure>
+      </section>
+
+      <!-- 第三板块（聊天记录图片展示区） -->
+      <section class="card">
+        <div class="section-title"><span class="dot"></span>内部部分聊天记录</div>
+        <div class="media">
+          <figure><img loading="lazy" draggable="false" src="https://cjw.dsai88.com/lvmaoquan/liaotianjilu/anquandiyi.jpg"  alt="聊天记录截图1" /></figure>
+          <figure><img loading="lazy" draggable="false" src="https://cjw.dsai88.com/lvmaoquan/liaotianjilu/anquandiyi1.jpg" alt="聊天记录截图2" /></figure>
+          <figure><img loading="lazy" draggable="false" src="https://cjw.dsai88.com/lvmaoquan/liaotianjilu/anquandiyi2.jpg" alt="聊天记录截图3" /></figure>
+          <figure><img loading="lazy" draggable="false" src="https://cjw.dsai88.com/lvmaoquan/liaotianjilu/anquandiyi3.jpg" alt="聊天记录截图4" /></figure>
+          <figure><img loading="lazy" draggable="false" src="https://cjw.dsai88.com/lvmaoquan/liaotianjilu/anquandiyi4.jpg" alt="聊天记录截图5" /></figure>
+          <figure><img loading="lazy" draggable="false" src="https://cjw.dsai88.com/lvmaoquan/liaotianjilu/anquandiyi5.jpg" alt="聊天记录截图6" /></figure>
+          <figure><img loading="lazy" draggable="false" src="https://cjw.dsai88.com/lvmaoquan/liaotianjilu/liaotianjilu7.jpg" alt="聊天记录截图7" /></figure>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <script>
+    /* 拦截常见快捷键（仅干扰，非绝对防护） */
+    (function(){
+      const BLOCK = (e)=>{ e.preventDefault(); e.stopPropagation(); return false; };
+
+      document.addEventListener('keydown', function(e){
+        const k = e.key || e.keyCode;
+
+        // F12
+        if (k === 'F12' || k === 123) return BLOCK(e);
+
+        // Ctrl / Cmd 组合
+        const ctrl = e.ctrlKey || e.metaKey;
+        if (ctrl){
+          const key = (''+k).toLowerCase();
+          if (key === 's' || key === 'u' || key === 'c') return BLOCK(e); // 保存/查看源码/复制
+        }
+
+        // Ctrl+Shift+I / J / C
+        if ((e.ctrlKey || e.metaKey) && e.shiftKey){
+          const key = (''+k).toLowerCase();
+          if (key === 'i' || key === 'j' || key === 'c') return BLOCK(e);
+        }
+      }, {capture:true});
+
+      ['selectstart','copy','cut','paste','dragstart','contextmenu'].forEach(evt=>{
+        document.addEventListener(evt, (e)=>{ e.preventDefault(); e.stopPropagation(); }, {capture:true});
+      });
+    })();
+
+    /* ---- 动态注入 SVG 水印（支持通过 :root 变量调参） ---- */
+    (function(){
+      const rootStyle = getComputedStyle(document.documentElement);
+      const text   = rootStyle.getPropertyValue('--wm-text').replace(/^["']|["']$/g,'').trim() || '认准QQ:3679003238';
+      const color  = rootStyle.getPropertyValue('--wm-color').trim() || '#ff2d55';
+      const size   = parseFloat(rootStyle.getPropertyValue('--wm-font-size')) || 16;
+      const opacity= parseFloat(rootStyle.getPropertyValue('--wm-opacity')) || 0.18;
+      const rotate = parseFloat(rootStyle.getPropertyValue('--wm-rotate')) || -24;
+      const tileW  = parseInt(rootStyle.getPropertyValue('--wm-tile-w')) || 160;
+      const tileH  = parseInt(rootStyle.getPropertyValue('--wm-tile-h')) || 110;
+
+      const svg = `
+        <svg xmlns='http://www.w3.org/2000/svg' width='${tileW}' height='${tileH}' viewBox='0 0 ${tileW} ${tileH}'>
+          <g transform='rotate(${rotate} ${tileW/2} ${tileH/2})' opacity='0.9'>
+            <text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle'
+              font-family='-apple-system,BlinkMacSystemFont,PingFang SC,Helvetica,Arial'
+              font-size='${size}' fill='${color}'>${text}</text>
+          </g>
+        </svg>`;
+      const url = 'data:image/svg+xml;utf8,' + encodeURIComponent(svg);
+
+      const wm = document.querySelector('.watermark');
+      wm.style.backgroundImage = `url("${url}")`;
+      wm.style.backgroundRepeat = 'repeat';
+      wm.style.backgroundSize = `${tileW}px ${tileH}px`;
+      wm.style.opacity = String(opacity);
+    })();
+  </script>
+</body>
+</html>
