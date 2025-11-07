@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>扫码添加微信</title>
+    <style>
+        /* 重置 body 的样式，防止滚动 */
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            width: 100%;
+            overflow: hidden;  /* 禁止滚动 */
+        }
+
+        /* 页面背景色 */
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #f8f8f8;
+            font-family: 'Arial', sans-serif;
+        }
+
+        /* 容器样式 */
+        .container {
+            text-align: center;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            width: 90%;
+            max-width: 350px;
+        }
+
+        /* 二维码图片样式，保持图片原始比例 */
+        .qr-code img {
+            width: 100%; /* 图片宽度自动适应容器宽度 */
+            height: auto; /* 高度自动调整，保持比例 */
+            max-width: none; /* 不限制最大宽度 */
+            max-height: none; /* 不限制最大高度 */
+            border-radius: 8px;
+        }
+
+        /* 引导信息样式 */
+        .message {
+            margin-top: 15px;
+            font-size: 16px;
+            color: #333;
+            line-height: 1.5;
+        }
+
+        .message p {
+            margin: 10px 0;
+        }
+
+        .message strong {
+            color: #0078D4;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="qr-code">
+            <!-- 替换为实际二维码图片链接 -->
+            <img src="https://ds50.cn/qq/wx1.jpg" alt="微信二维码">
+        </div>
+        <div class="message">
+            <p>长按二维码扫码添加大圣</p>
+        </div>
+    </div>
+</body>
+</html>
